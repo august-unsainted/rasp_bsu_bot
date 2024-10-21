@@ -18,8 +18,8 @@ async def cmd_get(message: Message):
 
 
 @router.callback_query(F.data == 'rasp_back')
-async def cmd_get_rasp(message: Message):
-    await cmd_get(message)
+async def cmd_get_rasp(callback: CallbackQuery):
+    await callback.message.edit_text('Выберите, какой прогноз Вам отправить:', reply_markup=get_rasp_kb)
 
 
 @router.callback_query(F.data.endswith('rasp'))
