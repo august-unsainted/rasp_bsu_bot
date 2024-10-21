@@ -61,7 +61,7 @@ async def full_time_rasp(callback: CallbackQuery):
     week_parity = int(callback.data[-1]) - 1
     text = await get_rasp(callback.message.chat.id, 'week', week_parity)
     texts = edit_week_length(text)
-    await callback.message.edit_text(texts[0], parse_mode='HTML')
+    await callback.message.edit_text(texts[0], parse_mode='HTML', reply_markup=back_rasp_kb)
     if len(texts) > 1:
         for mess in texts[1:]:
             await callback.message.answer(mess, parse_mode='HTML')
