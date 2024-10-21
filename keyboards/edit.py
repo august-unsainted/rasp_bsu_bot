@@ -20,7 +20,7 @@ def update_day(day):
         if day == btn.text:
             edit_day_kb[i][0].text = f'✅ {btn.text}'
         elif '✅ ' in btn.text:
-            edit_day_kb[i][0].text.replace('✅ ', '')
+            edit_day_kb[i][0].text = edit_day_kb[i][0].text.replace('✅ ', '')
 
 
 edit_department_kb = InlineKeyboardMarkup(inline_keyboard=[
