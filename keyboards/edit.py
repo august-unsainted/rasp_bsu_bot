@@ -60,6 +60,7 @@ async def update_kb(kb: list, message: Message):
         btn = kb[i][0]
         if user[field] == btn.text:
             kb[i][0].text = f'✅ {btn.text}'
+    print(edit_day_kb)
 
     return InlineKeyboardMarkup(inline_keyboard=kb)
 
