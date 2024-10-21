@@ -12,7 +12,8 @@ def add_user(chat_id, day, time, group, department):
         "time": time,
         "rasp_link": 'https://bsu.ru/rasp/?g=' + group,
         "department": department,
-        "settings": 'Простое'
+        "settings": 'Простое',
+        "hotkey": 'Расписание на неделю'
     })
 
 

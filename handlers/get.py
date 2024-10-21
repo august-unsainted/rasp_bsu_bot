@@ -20,6 +20,7 @@ async def cmd_get(message: Message):
 @router.callback_query(F.data.endswith('rasp'))
 async def send_rasp(callback: CallbackQuery, state: FSMContext):
     user = await find_user(callback.message.chat.id)
+    await callback.answer('Тип расписания выбран успешно!')
     if user and callback.data == 'week_rasp':
         if user["department"] == 'Дневное отделение':
             week_parity = find_rasp('Сегодня')[1]
@@ -50,7 +51,6 @@ async def send_rasp(message: Message):
 @router.callback_query(F.data.startswith('week_parity'))
 async def full_time_rasp(callback: CallbackQuery):
     await callback.answer('Номер недели успешно выбран')
-    await callback.message.bot.send_chat_action(chat_id=callback.message.from_user.id, action="typing")
     week_parity = int(callback.data[-1]) - 1
     text = await get_rasp(callback.message.chat.id, 'week', week_parity)
     texts = edit_week_length(text)
@@ -58,4 +58,4 @@ async def full_time_rasp(callback: CallbackQuery):
     if len(texts) > 1:
         for mess in texts[1:]:
             await callback.message.answer(mess, parse_mode='HTML')
-    await callback.message.edit_text(await get_rasp(callback.message.chat.id, 'week', week_parity), parse_mode='HTML')
+    # await callback.message.edit_text(await get_rasp(callback.message.chat.id, 'week', week_parity), parse_mode='HTML')
