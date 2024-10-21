@@ -20,15 +20,17 @@ async def cmd_edit(message: Message):
 async def edit_day(callback: CallbackQuery, state: FSMContext):
     await callback.answer('Данные для изменения успешно выбраны')
     await state.set_state(Register.day)
-    kb = edit_day_kb
-    user = await find_user(callback.message.chat.id)
-    if user['day'] == 'Сегодня':
-        kb[0][0].text = '✅ Сегодня'
-    else:
-        kb[1][0].text = '✅ Завтра'
+    # kb = edit_day_kb
+    # user = await find_user(callback.message.chat.id)
+    # if user['day'] == 'Сегодня':
+    #     kb[0][0].text = '✅ Сегодня'
+    #     kb[1][0].text = 'Завтра'
+    # else:
+    #     kb[0][0].text = 'Сегодня'
+    #     kb[1][0].text = '✅ Завтра'
 
     await callback.message.edit_text('Выберите, на какой день отправлять расписание:',
-                                     reply_markup=InlineKeyboardMarkup(inline_keyboard=kb))
+                                     reply_markup=InlineKeyboardMarkup(inline_keyboard=edit_day_kb))
 
 
 @router.callback_query(F.data == 'edit_time')

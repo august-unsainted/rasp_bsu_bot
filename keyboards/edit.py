@@ -13,6 +13,16 @@ edit_day_kb = [[InlineKeyboardButton(text='Сегодня', callback_data='send_
                [InlineKeyboardButton(text='Завтра', callback_data='send_tomorrow')],
                [InlineKeyboardButton(text='Назад', callback_data='back')]]
 
+
+def update_day(day):
+    for i in range(len(edit_day_kb)):
+        btn = edit_day_kb[i][0]
+        if day == btn.text:
+            edit_day_kb[i][0].text = f'✅ {btn.text}'
+        elif '✅ ' in btn.text:
+            edit_day_kb[i][0].text.replace('✅ ', '')
+
+
 edit_department_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Дневное отделение', callback_data='department_full_time')],
     [InlineKeyboardButton(text='Другое', callback_data='department_other')],
