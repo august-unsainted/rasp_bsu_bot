@@ -34,6 +34,7 @@ def group_validation(group_name: str) -> str:
     if group_name in groups:
         return group_name
     else:
+        group_name = group_name.lower()
         for symbol in group_name:
             new_symbol = letters.get(symbol)
             if new_symbol:
