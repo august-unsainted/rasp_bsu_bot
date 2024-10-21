@@ -41,21 +41,21 @@ back_kb = InlineKeyboardMarkup(inline_keyboard=[
 
 async def update_kb(kb: list, message: Message):
     user = await find_user(message.chat.id)
-    kbs = {
-        edit_day_kb: 'day',
-        edit_department_kb: 'department',
-        edit_settings_kb: 'settings',
-        edit_hotkey_kb: 'hotkey'
-    }
-    field = kbs[kb]
-    # if kb == edit_day_kb:
-    #     current = 'day'
-    # elif kb == edit_department_kb:
-    #     current = 'department'
-    # elif kb == edit_settings_kb:
-    #     current = 'settings'
-    # else:
-    #     current = 'hotkey'
+    # kbs = {
+    #     edit_day_kb: 'day',
+    #     edit_department_kb: 'department',
+    #     edit_settings_kb: 'settings',
+    #     edit_hotkey_kb: 'hotkey'
+    # }
+    # field = kbs[kb]
+    if kb == edit_day_kb:
+        field = 'day'
+    elif kb == edit_department_kb:
+        field = 'department'
+    elif kb == edit_settings_kb:
+        field = 'settings'
+    else:
+        field = 'hotkey'
     for i in range(len(kb)):
         btn = kb[i][0]
         if user[field] == btn.text:
