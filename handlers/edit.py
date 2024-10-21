@@ -17,7 +17,8 @@ async def cmd_edit(message: Message):
 
 
 @router.callback_query(F.data == 'edit_day')
-async def edit_day(callback: CallbackQuery, state: FSMContext, kb: edit_day_kb):
+async def edit_day(callback: CallbackQuery, state: FSMContext):
+    kb = edit_day_kb
     await callback.answer('Данные для изменения успешно выбраны')
     await state.set_state(Register.day)
     user = await find_user(callback.message.chat.id)
