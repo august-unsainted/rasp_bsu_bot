@@ -17,7 +17,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    # logging.basicConfig(level=logging.INFO)  # включаем только в процессе разработки, потом - выкл
+    logging.basicConfig(level=logging.INFO)  # включаем только в процессе разработки, потом - выкл
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
