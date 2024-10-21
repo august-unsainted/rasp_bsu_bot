@@ -43,6 +43,19 @@ def group_validation(group_name: str) -> str:
         return group_name if group_name in groups else ''
 
 
+def find_department(group):
+    req = requests.get('https://bsu.ru/rasp/?g=' + group)
+    soup = bs(req.text, 'html.parser')
+    rasp_week = soup.find('table', class_='rasp_week')
+    rasp_drasp = soup.find('table', class_='rasp_drasp')
+    if rasp_week and not rasp_drasp:
+        return 'Дневное отделение'
+    elif rasp_drasp and not rasp_week:
+        return 'Другое'
+    else:
+        return None
+
+
 def get_lessons(user: dict, old_week: Tag) -> str:
     detailed = user['settings'] == 'Подробное'
     lessons = old_week.find_all('tr')[1:]

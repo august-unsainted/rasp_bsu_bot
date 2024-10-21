@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
 from utils.db_functions import *
-from utils.parser import group_validation
+from utils.parser import group_validation, find_department
 from utils.time_functions import time_validation
 from utils.scheduler import add_schedule
 from keyboards.edit import back_kb
@@ -70,6 +70,22 @@ async def set_time(message: Message, state: FSMContext):
         await message.answer('Неверный формат времени. Пожалуйста, введите время в формате ЧЧ:ММ (например, 00:00)')
 
 
+async def end_registration(message: Message, state: FSMContext):
+    _id = message.chat.id
+    data = await state.get_data()
+    await state.clear()
+    add_user(_id, data['day'], data["time"], data["group"], data["department"])
+    user = await find_user(_id)
+    await message.answer(
+        f'👀 Информация о Вас:<blockquote>'
+        f'📅 День — {user["day"]}\n\n'
+        f'🕓 Время — {user["time"]}\n\n'
+        f'🎓 Номер группы — {user["rasp_link"][23:]}\n\n'
+        f'🏢 Отделение — {user["department"]}</blockquote>\n\n'
+        f'Для изменения данных воспользуйтесь меню ☺️', parse_mode='HTML', reply_markup=main_kb)
+    add_schedule(user)
+
+
 @router.message(Register.group)
 async def set_group(message: Message, state: FSMContext):
     group = group_validation(message.text)
@@ -82,7 +98,13 @@ async def set_group(message: Message, state: FSMContext):
             await message.answer('Номер группы успешно изменен! '
                                  'Для изменения других данных воспользуйтесь кнопкой:', reply_markup=back_kb)
         else:
-            await message.answer('Выберите отделение для отправки расписания:', reply_markup=reg_department_kb)
+            department = find_department(group)
+            if department:
+                await state.set_state(Register.department)
+                await state.update_data(department=department)
+                await end_registration(message, state)
+            else:
+                await message.answer('Выберите отделение для отправки расписания:', reply_markup=reg_department_kb)
     else:
         await message.answer('Неверный номер группы. Пожалуйста, введите номер группы (как в расписании)')
 
@@ -90,26 +112,16 @@ async def set_group(message: Message, state: FSMContext):
 @router.callback_query(F.data.startswith('department'))
 async def set_department(callback: CallbackQuery, state: FSMContext):
     message = callback.message
-    _id = message.chat.id
     departments = {'department_full_time': 'Дневное отделение',
                    'department_other': 'Другое'}
     await state.set_state(Register.department)
     await state.update_data(department=departments[callback.data])
-    data = await state.get_data()
-    await state.clear()
+    _id = message.chat.id
     if await find_user(_id):
-        update_user(_id, {"department": data["department"]})
+        update_user(_id, {"department": departments[callback.data]})
         await message.edit_text('Отделение успешно изменено! '
                                 'Для изменения других данных воспользуйтесь кнопкой:', reply_markup=back_kb)
     else:
-        add_user(_id, data['day'], data["time"], data["group"], data["department"])
         await message.edit_text('Отлично! Теперь Вам будут приходить сообщения ✅')
-        user = await find_user(_id)
-        await message.answer(
-            f'👀 Информация о Вас:<blockquote>'
-            f'📅 День — {user["day"]}\n\n'
-            f'🕓 Время — {user["time"]}\n\n'
-            f'🎓 Номер группы — {user["rasp_link"][23:]}\n\n'
-            f'🏢 Отделение — {user["department"]}</blockquote>\n\n'
-            f'Для изменения данных воспользуйтесь меню ☺️', parse_mode='HTML', reply_markup=main_kb)
-        add_schedule(user)
+        await end_registration(message, state)
+
