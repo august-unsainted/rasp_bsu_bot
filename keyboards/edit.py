@@ -1,4 +1,5 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+from utils.db_functions import find_user
 
 edit_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='📅 День', callback_data='edit_day'),
@@ -12,15 +13,6 @@ edit_kb = InlineKeyboardMarkup(inline_keyboard=[
 edit_day_kb = [[InlineKeyboardButton(text='Сегодня', callback_data='send_today')],
                [InlineKeyboardButton(text='Завтра', callback_data='send_tomorrow')],
                [InlineKeyboardButton(text='Назад', callback_data='back')]]
-
-
-def update_day(day):
-    for i in range(len(edit_day_kb)):
-        btn = edit_day_kb[i][0]
-        if day == btn.text:
-            edit_day_kb[i][0].text = f'✅ {btn.text}'
-        elif '✅ ' in btn.text:
-            edit_day_kb[i][0].text = edit_day_kb[i][0].text.replace('✅ ', '')
 
 
 edit_department_kb = InlineKeyboardMarkup(inline_keyboard=[
@@ -45,3 +37,29 @@ delete_user_kb = InlineKeyboardMarkup(inline_keyboard=[
 
 back_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Назад', callback_data='back')]])
+
+
+async def update_kb(kb: list, message: Message):
+    user = await find_user(message.chat.id)
+    kbs = {
+        edit_day_kb: 'day',
+        edit_department_kb: 'department',
+        edit_settings_kb: 'settings',
+        edit_hotkey_kb: 'hotkey'
+    }
+    field = kbs[kb]
+    # if kb == edit_day_kb:
+    #     current = 'day'
+    # elif kb == edit_department_kb:
+    #     current = 'department'
+    # elif kb == edit_settings_kb:
+    #     current = 'settings'
+    # else:
+    #     current = 'hotkey'
+    for i in range(len(kb)):
+        btn = kb[i][0]
+        if user[field] == btn.text:
+            kb[i][0].text = f'✅ {btn.text}'
+
+    return InlineKeyboardMarkup(inline_keyboard=kb)
+

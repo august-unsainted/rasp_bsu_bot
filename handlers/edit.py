@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 
 from handlers.registration import Register
 from utils.db_functions import update_user, find_user
-from keyboards.edit import edit_settings_kb, edit_kb, edit_day_kb, edit_hotkey_kb, edit_department_kb, back_kb
+from keyboards.edit import edit_settings_kb, edit_kb, edit_day_kb, edit_hotkey_kb, edit_department_kb, back_kb, update_kb
 from keyboards.main_menu import main_kb
 
 router = Router()
@@ -20,6 +20,7 @@ async def cmd_edit(message: Message):
 async def edit_day(callback: CallbackQuery, state: FSMContext):
     await callback.answer('Данные для изменения успешно выбраны')
     await state.set_state(Register.day)
+    kb = await update_kb(edit_day_kb, callback.message)
     # kb = edit_day_kb
     # user = await find_user(callback.message.chat.id)
     # if user['day'] == 'Сегодня':
@@ -30,7 +31,7 @@ async def edit_day(callback: CallbackQuery, state: FSMContext):
     #     kb[1][0].text = '✅ Завтра'
 
     await callback.message.edit_text('Выберите, на какой день отправлять расписание:',
-                                     reply_markup=InlineKeyboardMarkup(inline_keyboard=edit_day_kb))
+                                     reply_markup=kb)
 
 
 @router.callback_query(F.data == 'edit_time')

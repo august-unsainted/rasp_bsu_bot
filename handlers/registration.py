@@ -9,7 +9,6 @@ from utils.parser import group_validation
 from utils.time_functions import time_validation
 from utils.scheduler import add_schedule
 from keyboards.main_menu import main_kb
-from keyboards.edit import update_day
 from keyboards.registration import reg_day_kb, reg_department_kb
 
 router = Router()
@@ -41,7 +40,6 @@ async def register_day(callback: CallbackQuery, state: FSMContext):
     day = days[callback.data.split('_')[1]]
     if await find_user(callback.message.chat.id):
         update_user(callback.message.chat.id, {'day': day})
-        update_day(day)
         await callback.message.edit_text('День успешно изменен! Для изменения других данных воспользуйтесь меню')
         await state.clear()
     else:

@@ -43,7 +43,7 @@ def group_validation(group_name: str) -> str:
 
 
 def get_lessons(user: dict, old_week: Tag) -> str:
-    detailed = user['settings'] == 'detailed'
+    detailed = user['settings'] == 'Подробное'
     lessons = old_week.find_all('tr')[1:]
     weekday, week = ['', ''], []
     sep = '\n\n'
