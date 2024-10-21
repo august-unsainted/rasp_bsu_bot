@@ -23,9 +23,9 @@ async def edit_day(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Register.day)
     user = await find_user(callback.message.chat.id)
     if user['day'] == 'Сегодня':
-        kb[0].text = '✅ Сегодня'
+        kb[0][0].text = '✅ Сегодня'
     else:
-        kb[1].text = '✅ Завтра'
+        kb[1][0].text = '✅ Завтра'
 
     kb = InlineKeyboardMarkup(inline_keyboard=edit_day_kb)
     await callback.message.edit_text('Выберите, на какой день отправлять расписание:', reply_markup=kb)
