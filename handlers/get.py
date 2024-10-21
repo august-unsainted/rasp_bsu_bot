@@ -38,7 +38,7 @@ async def send_rasp(callback: CallbackQuery, state: FSMContext):
         if rasp_type == 'tomorrow':
             rasp_type = 'Завтра'
         await callback.message.edit_text(await get_rasp(user['_id'], rasp_type, None), parse_mode='HTML',
-                                         reply_markup=back_rasp_kb)
+                                         reply_markup=back_parity_kb)
     else:
         await cmd_start(callback.message, state)
 
