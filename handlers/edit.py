@@ -27,7 +27,7 @@ async def edit_day(callback: CallbackQuery, state: FSMContext):
     else:
         kb[1][0].text = '✅ Завтра'
 
-    kb = InlineKeyboardMarkup(inline_keyboard=edit_day_kb)
+    kb = InlineKeyboardMarkup(inline_keyboard=kb)
     await callback.message.edit_text('Выберите, на какой день отправлять расписание:', reply_markup=kb)
 
 
