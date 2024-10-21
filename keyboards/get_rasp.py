@@ -15,8 +15,8 @@ get_week_parity_kb = [
     InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text='🗓 1 неделя', callback_data='week_parity_1')],
         [InlineKeyboardButton(text='2 неделя', callback_data='week_parity_2')],
-        [InlineKeyboardButton(text='Назад', callback_data='week_rasp')]]),
+        [InlineKeyboardButton(text='Назад', callback_data='rasp_back')]]),
     InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text='1 неделя', callback_data='week_parity_1')],
         [InlineKeyboardButton(text='🗓 2 неделя', callback_data='week_parity_2')],
-        [InlineKeyboardButton(text='Назад', callback_data='week_rasp')]])]
+        [InlineKeyboardButton(text='Назад', callback_data='rasp_back')]])]
