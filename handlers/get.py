@@ -18,7 +18,7 @@ async def cmd_get(message: Message):
 
 
 @router.callback_query(F.data == 'rasp_back')
-async def get_rasp(message: Message):
+async def cmd_get_rasp(message: Message):
     await cmd_get(message)
 
 
