@@ -6,7 +6,7 @@ from utils.db_functions import find_user
 from utils.parser import get_rasp, edit_week_length
 from utils.time_functions import find_rasp
 from handlers.registration import cmd_start
-from keyboards.get_rasp import get_week_parity_kb, get_rasp_kb, back_rasp_kb
+from keyboards.get_rasp import get_week_parity_kb, get_rasp_kb, back_rasp_kb, back_parity_kb
 
 router = Router()
 
@@ -38,7 +38,7 @@ async def send_rasp(callback: CallbackQuery, state: FSMContext):
         if rasp_type == 'tomorrow':
             rasp_type = 'Завтра'
         await callback.message.edit_text(await get_rasp(user['_id'], rasp_type, None), parse_mode='HTML',
-                                         reply_markup=back_parity_kb)
+                                         reply_markup=back_rasp_kb)
     else:
         await cmd_start(callback.message, state)
 
@@ -61,7 +61,7 @@ async def full_time_rasp(callback: CallbackQuery):
     week_parity = int(callback.data[-1]) - 1
     text = await get_rasp(callback.message.chat.id, 'week', week_parity)
     texts = edit_week_length(text)
-    await callback.message.edit_text(texts[0], parse_mode='HTML', reply_markup=back_rasp_kb)
+    await callback.message.edit_text(texts[0], parse_mode='HTML', reply_markup=back_parity_kb)
     if len(texts) > 1:
         for mess in texts[1:]:
             await callback.message.answer(mess, parse_mode='HTML')
