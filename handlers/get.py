@@ -6,7 +6,7 @@ from utils.db_functions import find_user
 from utils.parser import get_rasp, edit_week_length
 from utils.time_functions import find_rasp
 from handlers.registration import cmd_start
-from keyboards.get_rasp import get_week_parity_kb, get_rasp_kb
+from keyboards.get_rasp import get_week_parity_kb, get_rasp_kb, back_rasp_kb
 
 router = Router()
 
@@ -15,6 +15,11 @@ router = Router()
 async def cmd_get(message: Message):
     await message.answer('Выберите, какой прогноз Вам отправить:', reply_markup=get_rasp_kb)
     await message.delete()
+
+
+@router.callback_query(F.data == 'rasp_back')
+async def get_rasp(message: Message):
+    await cmd_get(message)
 
 
 @router.callback_query(F.data.endswith('rasp'))
@@ -26,12 +31,14 @@ async def send_rasp(callback: CallbackQuery, state: FSMContext):
             week_parity = find_rasp('Сегодня')[1]
             await callback.message.edit_text('Выберите номер недели:', reply_markup=get_week_parity_kb[week_parity])
         else:
-            await callback.message.edit_text(await get_rasp(user['_id'], 'week', 0), parse_mode='HTML')
+            await callback.message.edit_text(await get_rasp(user['_id'], 'week', 0), parse_mode='HTML',
+                                             reply_markup=back_rasp_kb)
     elif user:
         rasp_type = callback.data.replace('_rasp', '')
         if rasp_type == 'tomorrow':
             rasp_type = 'Завтра'
-        await callback.message.edit_text(await get_rasp(user['_id'], rasp_type, None), parse_mode='HTML')
+        await callback.message.edit_text(await get_rasp(user['_id'], rasp_type, None), parse_mode='HTML',
+                                         reply_markup=back_rasp_kb)
     else:
         await cmd_start(callback.message, state)
 

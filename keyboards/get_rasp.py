@@ -1,5 +1,8 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+back_rasp_kb = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='Назад', callback_data='rasp_back')]])
+
 get_rasp_kb = InlineKeyboardMarkup(inline_keyboard=[[
     InlineKeyboardButton(text='На сегодня', callback_data='today_rasp'),
     InlineKeyboardButton(text='На завтра', callback_data='tomorrow_rasp')],
