@@ -42,5 +42,5 @@ def find_date(day: str) -> str:
     if date[-1] in 'йь':
         date = date.replace(date[-1], 'я')
     else:
-        date[-1] = 'а'
+        date += 'а'
     return date
