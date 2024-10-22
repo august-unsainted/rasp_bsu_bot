@@ -4,8 +4,7 @@ from aiogram.fsm.context import FSMContext
 
 from handlers.registration import Register
 from utils.db_functions import update_user, find_user
-from keyboards.edit import edit_settings_kb, edit_kb, edit_day_kb, edit_hotkey_kb, edit_department_kb, back_kb, \
-    update_kb
+from keyboards.edit import edit_kb, back_kb, update_kb
 from keyboards.main_menu import main_kb
 
 router = Router()
@@ -21,7 +20,7 @@ async def cmd_edit(message: Message):
 async def edit_day(callback: CallbackQuery, state: FSMContext):
     await callback.answer('Данные для изменения успешно выбраны')
     await state.set_state(Register.day)
-    kb = await update_kb(edit_day_kb, callback.message)
+    kb = await update_kb('day', callback.message)
     await callback.message.edit_text('Выберите, на какой день отправлять расписание:', reply_markup=kb)
 
 
@@ -42,14 +41,14 @@ async def edit_group(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == 'edit_department')
 async def edit_year(callback: CallbackQuery):
     await callback.answer('Данные для изменения успешно выбраны')
-    kb = await update_kb(edit_department_kb, callback.message)
+    kb = await update_kb('department', callback.message)
     await callback.message.edit_text('Выберите отделение для отправки расписания:', reply_markup=kb)
 
 
 @router.callback_query(F.data == 'edit_hotkey')
 async def edit_settings(callback: CallbackQuery):
     await callback.answer('Данные для изменения успешно выбраны')
-    kb = await update_kb(edit_hotkey_kb, callback.message)
+    kb = await update_kb('hotkey', callback.message)
     await callback.message.edit_text('Выберите быструю кнопку:', reply_markup=kb)
 
 
@@ -72,7 +71,7 @@ async def set_settings(callback: CallbackQuery):
 @router.callback_query(F.data == 'edit_settings')
 async def edit_settings(callback: CallbackQuery):
     await callback.answer('Данные для изменения успешно выбраны')
-    kb = await update_kb(edit_settings_kb, callback.message)
+    kb = await update_kb('settings', callback.message)
     await callback.message.edit_text('Выберите тип отображения расписания:', reply_markup=kb)
 
 

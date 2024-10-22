@@ -6,7 +6,7 @@ from utils.db_functions import find_user
 from utils.parser import get_rasp, edit_week_length
 from utils.time_functions import find_rasp
 from handlers.registration import cmd_start
-from keyboards.get_rasp import get_week_parity_kb, get_rasp_kb, back_rasp_kb, back_parity_kb
+from keyboards.get_rasp import curr_week_kb, get_rasp_kb, back_rasp_kb, back_parity_kb
 
 router = Router()
 
@@ -28,8 +28,7 @@ async def send_rasp(callback: CallbackQuery, state: FSMContext):
     await callback.answer('Тип расписания выбран успешно!')
     if user and callback.data == 'week_rasp':
         if user["department"] == 'Дневное отделение':
-            week_parity = find_rasp('Сегодня')[1]
-            await callback.message.edit_text('Выберите номер недели:', reply_markup=get_week_parity_kb[week_parity])
+            await callback.message.edit_text('Выберите номер недели:', reply_markup=curr_week_kb())
         else:
             await callback.message.edit_text(await get_rasp(user['_id'], 'week', 0), parse_mode='HTML',
                                              reply_markup=back_rasp_kb)

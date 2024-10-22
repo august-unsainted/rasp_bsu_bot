@@ -41,29 +41,25 @@ back_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Назад', callback_data='back')]])
 
 
-async def update_kb(kb: list, message: Message):
+async def update_kb(field: str, message: Message):
     user = await find_user(message.chat.id)
-
-    if kb == edit_day_kb:
-        field = 'day'
-    elif kb == edit_department_kb:
-        field = 'department'
-    elif kb == edit_settings_kb:
-        field = 'settings'
-    else:
-        field = 'hotkey'
-
-    if kb == 'main':
-        kb = copy.deepcopy(main_kb)
+    fields = {
+        'day': edit_day_kb,
+        'department': edit_department_kb,
+        'settings': edit_settings_kb,
+        'hotkey': edit_hotkey_kb,
+        'main': main_kb
+    }
+    kb = copy.deepcopy(fields[field])
+    if field == 'main':
         kb.keyboard[0][0] = user['hotkey']
     else:
-        kb = copy.deepcopy(kb)
         for i in range(len(kb)):
-            btn = kb[i][0]
-            if user[field] == btn.text:
-                text = f'✅ {btn.text}'
-            else:
-                text = btn.text
-            kb[i][0].text = text
+            for j in range(len(kb[i])):
+                btn = kb[i][j]
+                if user[field] == btn.text:
+                    kb[i][j].text = f'✅ {btn.text}'
+                else:
+                    kb[i][j].text = btn.text
 
     return InlineKeyboardMarkup(inline_keyboard=kb)
