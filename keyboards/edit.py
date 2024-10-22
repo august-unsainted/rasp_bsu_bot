@@ -41,7 +41,7 @@ back_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Назад', callback_data='back')]])
 
 
-async def update_kb(field: str, message: Message):
+async def update_kb(field: str, message: Message) -> InlineKeyboardMarkup:
     user = await find_user(message.chat.id)
     fields = {
         'day': edit_day_kb,

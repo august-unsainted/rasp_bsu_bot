@@ -124,4 +124,3 @@ async def set_department(callback: CallbackQuery, state: FSMContext):
     else:
         await message.edit_text('Отлично! Теперь Вам будут приходить сообщения ✅')
         await end_registration(message, state)
-

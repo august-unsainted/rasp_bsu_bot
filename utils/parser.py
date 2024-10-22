@@ -43,7 +43,7 @@ def group_validation(group_name: str) -> str:
         return group_name if group_name in groups else ''
 
 
-def find_department(group):
+def find_department(group: str) -> str | None:
     req = requests.get('https://bsu.ru/rasp/?g=' + group)
     soup = bs(req.text, 'html.parser')
     rasp_week = soup.find('table', class_='rasp_week')
@@ -146,14 +146,3 @@ async def get_rasp(_id: int, rasp_type: str, week_parity: int | None) -> str:
         return get_week(soup, user, week_parity)
     else:
         return get_day(user, soup, rasp_type)
-
-
-# print(parser(URL, 'Дневное отделен', 'tomorrow'))
-
-# rasp = get_full_rasp({"rasp_link": "https://www.bsu.ru/rasp/?g=09A28", "department": "Дневное отделение",
-#                      "settings": "detaile"}, 0)
-#
-# print(rasp)
-
-# print(get_day({"rasp_link": "https://www.bsu.ru/rasp/?g=09A28", "department": "Дневное отделение",
-#                      "settings": "defaul"}, 'today'))

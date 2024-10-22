@@ -19,7 +19,7 @@ get_week_parity_kb = [
     [InlineKeyboardButton(text='Назад', callback_data='rasp_back')]]
 
 
-def curr_week_kb():
+def curr_week_kb() -> InlineKeyboardMarkup:
     week_parity = find_rasp('Сегодня')[1]
     kb = copy.deepcopy(get_week_parity_kb)
     kb[week_parity][0].text = f'🗓 {kb[week_parity][0].text}'

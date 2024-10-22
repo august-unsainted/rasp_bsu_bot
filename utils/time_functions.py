@@ -4,7 +4,7 @@ import locale
 locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
 
 
-def time_validation(time):
+def time_validation(time: str) -> str | bool:
     time_arr = time.split(':')
     if len(time_arr) == 2:
         hours, minutes = time_arr[0], time_arr[1]
@@ -14,7 +14,7 @@ def time_validation(time):
         return False
 
 
-def find_rasp(day):
+def find_rasp(day: str) -> (int, int):
     week_parity = datetime.today().isocalendar().week % 2 == 1
     today = datetime.today().weekday()
     if day == 'Завтра':
@@ -26,7 +26,7 @@ def find_rasp(day):
     return rasp_weekday, int(week_parity)
 
 
-def find_date(day):
+def find_date(day: str) -> str:
     if day == 'Завтра':
         rasp_day = datetime.now() + timedelta(days=1)
     else:
