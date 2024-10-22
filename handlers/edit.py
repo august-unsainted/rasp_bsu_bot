@@ -3,7 +3,7 @@ from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup
 from aiogram.fsm.context import FSMContext
 
 from handlers.registration import Register
-from utils.db_functions import update_user, find_user
+from utils.db_functions import update_user
 from keyboards.edit import edit_kb, back_kb, update_kb
 from keyboards.main_menu import main_kb
 
@@ -62,7 +62,7 @@ async def set_settings(callback: CallbackQuery):
         'full': 'Расписание на неделю'
     }
     key = hotkeys[callback.data.replace('_hotkey', '')]
-    await update_user(callback.message.chat.id, {'hotkey': key})
+    update_user(callback.message.chat.id, {'hotkey': key})
     main_kb.keyboard[0][0].text = key
     await callback.message.answer('Для изменения других данных воспользуйтесь меню',
                                   reply_markup=main_kb)
@@ -82,7 +82,7 @@ async def settings(callback: CallbackQuery):
         'default': 'Простое'
     }
     settings_type = setting[callback.data.split('_')[0]]
-    await update_user(callback.message.chat.id, {"settings": settings_type})
+    update_user(callback.message.chat.id, {"settings": settings_type})
     await callback.answer('Настройки изменены успешно')
     await callback.message.edit_text('Тип отображения был успешно изменен. '
                                      'Для изменения других данных воспользуйтесь кнопкой:', reply_markup=back_kb)

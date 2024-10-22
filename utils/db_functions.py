@@ -17,13 +17,13 @@ def add_user(chat_id: int, day: str, time: str, group: str, department: str) -> 
     })
 
 
-def update_user(chat_id: int, data: dict):
-    return collection.update_one({"_id": chat_id}, {"$set": data})
+def update_user(chat_id: int, data: dict) -> None:
+    collection.update_one({"_id": chat_id}, {"$set": data})
 
 
 def delete_user(chat_id: int) -> None:
     collection.delete_one({"_id": chat_id})
 
 
-def find_user(user_id: int):
-    return collection.find_one({"_id": user_id})
+async def find_user(user_id: int) -> dict | None:
+    return await collection.find_one({"_id": user_id})

@@ -59,7 +59,7 @@ async def set_time(message: Message, state: FSMContext):
         user = await find_user(message.chat.id)
         if user:
             await state.clear()
-            await update_user(message.chat.id, {"time": time})
+            update_user(message.chat.id, {"time": time})
             add_schedule(await find_user(message.chat.id))
             await message.answer('Время отправки успешно изменено! '
                                  'Для изменения других данных воспользуйтесь кнопкой:', reply_markup=back_kb)
