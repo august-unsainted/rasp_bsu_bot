@@ -31,9 +31,16 @@ def find_date(day: str) -> str:
         rasp_day = datetime.now() + timedelta(days=1)
     else:
         rasp_day = datetime.now()
+    # date = datetime.strftime(rasp_day, '%A (%e %B)').lower().lstrip()
     date = datetime.strftime(rasp_day, '%e %B').lower().lstrip()
+
+    # if date[-2] in 'йь':
+    #     date = date.replace(date[-2], 'я')
+    # else:
+    #     date[-1:] = 'а)'
+
     if date[-1] in 'йь':
         date = date.replace(date[-1], 'я')
     else:
-        date += 'а'
+        date[-1] = 'а'
     return date

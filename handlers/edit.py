@@ -55,7 +55,7 @@ async def edit_settings(callback: CallbackQuery):
 @router.callback_query(F.data.endswith('hotkey'))
 async def set_settings(callback: CallbackQuery):
     await callback.answer('Быстрая кнопка выбрана успешно')
-    await callback.message.edit_text('Быстрая кнопка изменена успешно!')
+    await callback.message.edit_text('✅ <b>Быстрая кнопка изменена успешно!</b>', parse_mode='HTML')
     hotkeys = {
         'today': 'Расписание на сегодня',
         'tomorrow': 'Расписание на завтра',
@@ -64,8 +64,7 @@ async def set_settings(callback: CallbackQuery):
     key = hotkeys[callback.data.replace('_hotkey', '')]
     update_user(callback.message.chat.id, {'hotkey': key})
     main_kb.keyboard[0][0].text = key
-    await callback.message.answer('Для изменения других данных воспользуйтесь меню',
-                                  reply_markup=main_kb)
+    await callback.message.answer('Для изменения других данных воспользуйтесь кнопкой ☺️', reply_markup=main_kb)
 
 
 @router.callback_query(F.data == 'edit_settings')
@@ -84,8 +83,9 @@ async def settings(callback: CallbackQuery):
     settings_type = setting[callback.data.split('_')[0]]
     update_user(callback.message.chat.id, {"settings": settings_type})
     await callback.answer('Настройки изменены успешно')
-    await callback.message.edit_text('Тип отображения был успешно изменен. '
-                                     'Для изменения других данных воспользуйтесь кнопкой:', reply_markup=back_kb)
+    await callback.message.edit_text('✅ <b>Тип отображения был успешно изменен!</b>\n\n'
+                                     'Для изменения других данных воспользуйтесь кнопкой ☺️', parse_mode='HTML',
+                                     reply_markup=back_kb)
 
 
 @router.callback_query(F.data == 'back')

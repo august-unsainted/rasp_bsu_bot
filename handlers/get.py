@@ -30,8 +30,12 @@ async def send_rasp(callback: CallbackQuery, state: FSMContext):
         if user["department"] == 'Дневное отделение':
             await callback.message.edit_text('Выберите номер недели:', reply_markup=curr_week_kb())
         else:
-            await callback.message.edit_text(await get_rasp(user['_id'], 'week', 0), parse_mode='HTML',
-                                             reply_markup=back_rasp_kb)
+            text = await get_rasp(callback.message.chat.id, 'week', 0)
+            texts = edit_week_length(text)
+            await callback.message.edit_text(texts[0], parse_mode='HTML', reply_markup=back_rasp_kb)
+            if len(texts) > 1:
+                for mess in texts[1:]:
+                    await callback.message.answer(mess, parse_mode='HTML', reply_markup=back_rasp_kb)
     elif user:
         rasp_type = callback.data.replace('_rasp', '')
         if rasp_type == 'tomorrow':
@@ -45,9 +49,16 @@ async def send_rasp(callback: CallbackQuery, state: FSMContext):
 @router.message(F.text.startswith('Расписание на'))
 async def send_rasp(message: Message):
     await message.bot.send_chat_action(chat_id=message.from_user.id, action="typing")
+    user = await find_user(message.chat.id)
     if message.text == 'Расписание на неделю':
-        week_parity = find_rasp('Сегодня')[1]
-        await message.answer(await get_rasp(message.chat.id, 'week', week_parity), parse_mode='HTML')
+        if user['department'] == 'Другое':
+            text = await get_rasp(message.chat.id, 'week', 0)
+            texts = edit_week_length(text)
+            for mess in texts:
+                await message.answer(mess, parse_mode='HTML')
+        else:
+            week_parity = find_rasp('Сегодня')[1]
+            await message.answer(await get_rasp(message.chat.id, 'week', week_parity), parse_mode='HTML')
     else:
         day = message.text[14:].capitalize()
         await message.answer(await get_rasp(message.chat.id, day, None), parse_mode='HTML')
@@ -58,10 +69,5 @@ async def send_rasp(message: Message):
 async def full_time_rasp(callback: CallbackQuery):
     await callback.answer('Номер недели успешно выбран')
     week_parity = int(callback.data[-1]) - 1
-    text = await get_rasp(callback.message.chat.id, 'week', week_parity)
-    texts = edit_week_length(text)
-    await callback.message.edit_text(texts[0], parse_mode='HTML', reply_markup=back_parity_kb)
-    if len(texts) > 1:
-        for mess in texts[1:]:
-            await callback.message.answer(mess, parse_mode='HTML')
-    # await callback.message.edit_text(await get_rasp(callback.message.chat.id, 'week', week_parity), parse_mode='HTML')
+    await callback.message.edit_text(await get_rasp(callback.message.chat.id, 'week', week_parity),
+                                     parse_mode='HTML', reply_markup=back_parity_kb)

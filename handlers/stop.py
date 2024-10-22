@@ -4,7 +4,7 @@ from aiogram.filters import Command
 
 from utils.scheduler import pause_schedule, resume_schedule, delete_schedule
 from utils.db_functions import delete_user
-from keyboards.edit import delete_user_kb
+from keyboards.edit import delete_user_kb, back_kb
 
 router = Router()
 
@@ -20,7 +20,8 @@ async def cmd_stop(callback: CallbackQuery):
 async def callback_start(callback: CallbackQuery):
     await callback.answer('Вариант выбран')
     if callback.data == 'dont_delete_user':
-        await callback.message.edit_text('Информация не была удалена. Для изменения данных воспользуйтесь меню ✅')
+        await callback.message.edit_text('Информация не была удалена. Для изменения данных воспользуйтесь меню ✅',
+                                         reply_markup=back_kb)
     else:
         delete_user(callback.message.chat.id)
         delete_schedule(callback.message.chat.id)

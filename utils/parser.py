@@ -10,8 +10,7 @@ def edit_week_length(text: str) -> list:
     messages = []
     if len(text) > 4095:
         days = text.split('</blockquote>')
-        length = 0
-        ind = 0
+        length, ind = 0, 0
         for i in range(len(days)):
             if length + len(days[i]) <= 4095:
                 length += len(days[i])
@@ -22,7 +21,6 @@ def edit_week_length(text: str) -> list:
                 length = 0
                 ind = i
         messages[-1] = messages[-1][:-13]
-        # print(messages)
         return messages
     return [text]
 
@@ -57,7 +55,9 @@ def find_department(group: str) -> str | None:
 
 
 def get_lessons(user: dict, old_week: Tag) -> str:
+    today, tomorrow = find_date('Сегодня'), find_date('Завтра')
     detailed = user['settings'] == 'Подробное'
+    department = user['department'] == 'Дневное отделение'
     lessons = old_week.find_all('tr')[1:]
     weekday, week = ['', ''], []
     sep = '\n\n'
@@ -75,6 +75,15 @@ def get_lessons(user: dict, old_week: Tag) -> str:
         for subj in subjects:
             if len(subjects) < 2:
                 lesson = {'other': f'<b>{subj.text}</b>\n'}
+                # if subj.text.lower() in today:
+                #     ind = today.find(' ')
+                #     day = ['Сегодня: ', today[:ind], today[ind:]]
+                # elif subj.text.lower() in tomorrow:
+                #     ind = tomorrow.find(' ')
+                #     day = ['Завтра: ', tomorrow[:ind], tomorrow[ind:]]
+                # else:
+                #     day = ['', subj.text, '']
+                # lesson = {'other': f'{day[0]}<b>{day[1]}</b>{day[2]}\n'}
                 week.append(f'{weekday[0]}<blockquote>{sep.join(weekday[1:])}</blockquote>\n')
                 weekday = []
                 break
@@ -85,6 +94,8 @@ def get_lessons(user: dict, old_week: Tag) -> str:
                 rasp_type = subj['class'][0].replace('rasp_', '')
                 if rasp_type == 'subj_type':
                     lesson['subj_type'] = types.get(subj.text)
+                elif len(subj['class']) > 1:
+                    lesson['time'] = ' ' * 10
                 else:
                     lesson[rasp_type] = subj.text
             else:
@@ -97,14 +108,21 @@ def get_lessons(user: dict, old_week: Tag) -> str:
             lesson_str = f'{time} | {aud} | {subj}'
             if detailed:
                 teacher, subj_type = lesson['teacher'], lesson['subj_type']
-                lesson_str += f'\n{teacher} — {subj_type}'
+                lesson_str += f'\n           | {teacher} — {subj_type}'
             lesson = lesson_str
         else:
             lesson = lesson['other']
-        weekday.append(lesson)
+
+        if lesson[0] == ' ':
+            weekday[-1] += f'\n{lesson}'
+        else:
+            weekday.append(lesson)
 
     week.append(f'{weekday[0]}<blockquote>{sep.join(weekday[1:])}</blockquote>\n')
-    return '\n'.join(week[1:])
+    text = '\n'.join(week[1:])
+    if department:
+        return text
+    return f'<b>{text[text.index(today):]}'
 
 
 def get_day(user: dict, soup: bs, day: str) -> str:

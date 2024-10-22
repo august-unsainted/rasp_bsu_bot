@@ -24,6 +24,7 @@ class Register(StatesGroup):
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext):
+    await message.bot.send_chat_action(chat_id=message.from_user.id, action="typing")
     if await find_user(message.chat.id):
         await message.answer(
             'Вы уже зарегистрированы. Для изменения данных воспользуйтесь меню')
@@ -36,23 +37,26 @@ async def cmd_start(message: Message, state: FSMContext):
 
 @router.callback_query(F.data.startswith('send'))
 async def register_day(callback: CallbackQuery, state: FSMContext):
+    await callback.message.bot.send_chat_action(chat_id=callback.message.from_user.id, action="typing")
     await callback.answer('День выбран успешно')
     days = {'today': 'Сегодня', 'tomorrow': 'Завтра'}
     day = days[callback.data.split('_')[1]]
     if await find_user(callback.message.chat.id):
         update_user(callback.message.chat.id, {'day': day})
-        await callback.message.edit_text('День успешно изменен! '
-                                         'Для изменения других данных воспользуйтесь кнопкой:', reply_markup=back_kb)
+        await callback.message.edit_text('✅ <b>День успешно изменен!</b>\n\n'
+                                         'Для изменения других данных воспользуйтесь кнопкой ☺️', reply_markup=back_kb,
+                                         parse_mode='HTML')
         await state.clear()
     else:
         await state.update_data(day=day)
-        await callback.message.edit_text('День выбран успешно!')
         await state.set_state(Register.time)
-        await callback.message.answer('Напишите время отправки расписания (например, 00:00)')
+        await callback.message.edit_text('✅ <b>День выбран успешно!</b>\n\n'
+                                         'Введите время отправки расписания (например, 00:00)', parse_mode='HTML')
 
 
 @router.message(Register.time)
 async def set_time(message: Message, state: FSMContext):
+    await message.bot.send_chat_action(chat_id=message.from_user.id, action="typing")
     time = time_validation(message.text)
     if time:
         await state.update_data(time=time)
@@ -61,16 +65,19 @@ async def set_time(message: Message, state: FSMContext):
             await state.clear()
             update_user(message.chat.id, {"time": time})
             add_schedule(await find_user(message.chat.id))
-            await message.answer('Время отправки успешно изменено! '
-                                 'Для изменения других данных воспользуйтесь кнопкой:', reply_markup=back_kb)
+            await message.answer('✅ <b>Время отправки успешно изменено!</b>\n\n'
+                                 'Для изменения других данных воспользуйтесь кнопкой ☺️', reply_markup=back_kb,
+                                 parse_mode='HTML')
         else:
             await state.set_state(Register.group)
-            await message.answer('Введите номер группы (как в расписании)')
+            await message.answer('✅ <b>Время отправки выбрано успешно!</b>\n\n'
+                                 'Введите номер группы (как в расписании)', parse_mode='HTML')
     else:
         await message.answer('Неверный формат времени. Пожалуйста, введите время в формате ЧЧ:ММ (например, 00:00)')
 
 
 async def end_registration(message: Message, state: FSMContext):
+    await message.bot.send_chat_action(chat_id=message.from_user.id, action="typing")
     _id = message.chat.id
     data = await state.get_data()
     await state.clear()
@@ -80,7 +87,7 @@ async def end_registration(message: Message, state: FSMContext):
         f'👀 Информация о Вас:<blockquote>'
         f'📅 День — {user["day"]}\n\n'
         f'🕓 Время — {user["time"]}\n\n'
-        f'🎓 Номер группы — {user["rasp_link"][23:]}\n\n'
+        f'🎓 Номер группы — {user["rasp_link"][23:].upper()}\n\n'
         f'🏢 Отделение — {user["department"]}</blockquote>\n\n'
         f'Для изменения данных воспользуйтесь меню ☺️', parse_mode='HTML', reply_markup=main_kb)
     add_schedule(user)
@@ -88,15 +95,23 @@ async def end_registration(message: Message, state: FSMContext):
 
 @router.message(Register.group)
 async def set_group(message: Message, state: FSMContext):
+    await message.bot.send_chat_action(chat_id=message.from_user.id, action="typing")
     group = group_validation(message.text)
     if group:
         await state.update_data(group=group)
         if await find_user(message.chat.id):
-            data = await state.get_data()
             await state.clear()
-            update_user(message.chat.id, {"rasp_link": 'https://bsu.ru/rasp/?g=' + data["group"]})
-            await message.answer('Номер группы успешно изменен! '
-                                 'Для изменения других данных воспользуйтесь кнопкой:', reply_markup=back_kb)
+            update_user(message.chat.id, {"rasp_link": 'https://bsu.ru/rasp/?g=' + group})
+            department = find_department(group)
+            if department:
+                update_user(message.chat.id, {"department": department})
+                await message.answer(f'✅ <b>Номер группы успешно изменен!</b>\n\n'
+                                     f'Отделение автоматически определено как «{department[:7].lower()}» 😇',
+                                     reply_markup=back_kb, parse_mode='HTML')
+            else:
+                await message.answer('✅ <b>Номер группы выбран успешно!</b>\n\n'
+                                     'Выберите отделение для отправки расписания:',
+                                     reply_markup=reg_department_kb, parse_mode='HTML')
         else:
             department = find_department(group)
             if department:
@@ -104,7 +119,9 @@ async def set_group(message: Message, state: FSMContext):
                 await state.update_data(department=department)
                 await end_registration(message, state)
             else:
-                await message.answer('Выберите отделение для отправки расписания:', reply_markup=reg_department_kb)
+                await message.answer('✅ <b>Номер группы выбран успешно!</b>\n\n'
+                                     'Выберите отделение для отправки расписания:',
+                                     reply_markup=reg_department_kb, parse_mode='HTML')
     else:
         await message.answer('Неверный номер группы. Пожалуйста, введите номер группы (как в расписании)')
 
@@ -112,6 +129,7 @@ async def set_group(message: Message, state: FSMContext):
 @router.callback_query(F.data.startswith('department'))
 async def set_department(callback: CallbackQuery, state: FSMContext):
     message = callback.message
+    await message.bot.send_chat_action(chat_id=message.from_user.id, action="typing")
     departments = {'department_full_time': 'Дневное отделение',
                    'department_other': 'Другое'}
     await state.set_state(Register.department)
@@ -119,8 +137,9 @@ async def set_department(callback: CallbackQuery, state: FSMContext):
     _id = message.chat.id
     if await find_user(_id):
         update_user(_id, {"department": departments[callback.data]})
-        await message.edit_text('Отделение успешно изменено! '
-                                'Для изменения других данных воспользуйтесь кнопкой:', reply_markup=back_kb)
+        await message.edit_text('✅ <b>Отделение успешно изменено!</b>\n\n'
+                                'Для изменения других данных воспользуйтесь кнопкой ☺️', reply_markup=back_kb,
+                                parse_mode='HTML')
     else:
         await message.edit_text('Отлично! Теперь Вам будут приходить сообщения ✅')
         await end_registration(message, state)
