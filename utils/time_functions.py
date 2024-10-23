@@ -56,7 +56,9 @@ def find_dates_other(lessons: list) -> (list, int):
         if 'valign' not in lessons[i].attrs:
             month, weekday = lessons[i].text.split(', ')
             lessons[i].string.replace_with(f'{weekday.capitalize()} ({month})')
-            date = datetime.strptime(lessons[i].text, '%A (%e %B)')
+            if len(lessons[i].text.split(' ')[1]) == 2:
+                date = lessons[i].text.replace('(', '(0')
+            date = datetime.strptime(lessons[i].text, '%A (%d %B)')
             if today >= date:
                 index = i
     return lessons, index
