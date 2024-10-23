@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 from bs4 import Tag
 
-from utils.time_functions import find_rasp, find_date
+from utils.time_functions import find_rasp, find_date, find_dates_other
 from utils.db_functions import find_user
 
 
@@ -55,10 +55,14 @@ def find_department(group: str) -> str | None:
 
 
 def get_lessons(user: dict, old_week: Tag, week_parity: int | str) -> str:
-    today, tomorrow, week_dates = find_date('Сегодня'), find_date('Завтра'), find_date('Неделя' + str(week_parity))
     detailed = user['settings'] == 'Подробное'
     department = user['department'] == 'Дневное отделение'
+    today, tomorrow = find_date('Сегодня'), find_date('Завтра')
     lessons = old_week.find_all('tr')[1:]
+    if department:
+        week_dates = find_date('Неделя' + str(week_parity))
+    else:
+        lessons = find_dates_other(lessons)
     weekday, week = ['', ''], []
     sep = '\n\n'
     types = {
@@ -74,11 +78,15 @@ def get_lessons(user: dict, old_week: Tag, week_parity: int | str) -> str:
         subjects = el.find_all('td')
         for subj in subjects:
             if len(subjects) < 2:
-                start = week_dates.find(subj.text)
-                end = week_dates.find('\n', start)
-                day = week_dates[start:end].capitalize()
-                ind = day.find(' ')
-                lesson = {'other': f'<b>{day[:ind]}</b>{day[ind:]}\n'}
+                if department:
+                    start = week_dates.find(subj.text)
+                    end = week_dates.find('\n', start)
+                    day = week_dates[start:end].capitalize()
+                    ind = day.find(' ')
+                    lesson = {'other': f'<b>{day[:ind]}</b>{day[ind:]}\n'}
+                else:
+                    day = subj.text
+                    lesson = {'other': f'{subj.text}\n'}
                 if day == today:
                     lesson['other'] = '📆 ' + lesson['other']
                 week.append(f'{weekday[0]}<blockquote>{sep.join(weekday[1:])}</blockquote>\n')
@@ -119,7 +127,9 @@ def get_lessons(user: dict, old_week: Tag, week_parity: int | str) -> str:
     text = '\n'.join(week[1:])
     if department:
         return text
-    return f'<b>{text[text.index(today):]}'
+    return text
+    # return f'<b>{text[find_ind_rasp(lessons):]}'
+    # return f'<b>{text[text.index(today):]}'
 
 
 def get_day(user: dict, soup: bs, day: str) -> str:

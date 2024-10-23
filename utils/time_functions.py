@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from bs4 import Tag
 import locale
 
 locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
@@ -46,3 +47,24 @@ def find_date(day: str) -> str:
 
     date = datetime.strftime(rasp_day, '%A (%e %B)').capitalize().lstrip().replace('( ', '(')
     return date
+
+
+def find_dates_other(lessons: list) -> (list, int):
+    today = datetime.today()
+    index = -1
+    for i in range(len(lessons)):
+        if 'valign' not in lessons[i].attrs:
+            month, weekday = lessons[i].text.split(', ')
+            lessons[i].string.replace_with(f'{weekday.capitalize()} ({month})')
+            date = datetime.strptime(lessons[i].text, '%A (%e %B)')
+            if today >= date:
+                index = i
+    return lessons, index
+
+#
+# def find_date_other(dates: list) -> list:
+#     for i in range(len(dates)):
+#         month, weekday = dates[i].split(', ')
+#         dates[i] = f'{weekday.capitlize()} ({month})'
+#     return dates
+
