@@ -129,6 +129,8 @@ def get_day(user: dict, soup: bs, day: str) -> str:
         if len(weeks_rasp) > 0:
             clear_week = get_lessons(user, weeks_rasp[week_parity], week_parity).split('</blockquote>')
             if rasp_weekday < len(clear_week) - 1:
+                if day == 'Завтра':
+                    return f'Завтра: {clear_week[rasp_weekday]}</blockquote>'
                 return f'{clear_week[rasp_weekday]}</blockquote>'
         return 'К сожалению, на этот день нет расписания'
     else:

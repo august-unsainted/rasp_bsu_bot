@@ -61,7 +61,7 @@ async def send_rasp(message: Message):
             await message.answer(await get_rasp(message.chat.id, 'week', week_parity), parse_mode='HTML')
     else:
         day = message.text[14:].capitalize()
-        await message.answer(await get_rasp(message.chat.id, day, None), parse_mode='HTML')
+        await message.answer(await get_rasp(message.chat.id, day, ''), parse_mode='HTML')
         await message.delete()
 
 
