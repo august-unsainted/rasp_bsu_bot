@@ -40,7 +40,7 @@ def find_date(day: str) -> str:
             if weekday[-2] in 'йь':
                 weekday = weekday[:-2] + 'я)'
             else:
-                weekday[-1:] = 'а)'
+                weekday = weekday[:-1] + 'а)'
             week_dates.append(weekday)
         return '\n'.join(week_dates)
     elif day == 'Завтра':
@@ -52,5 +52,5 @@ def find_date(day: str) -> str:
     if date[-2] in 'йь':
         date = date[:-2] + 'я)'
     else:
-        date[-1:] = 'а)'
+        date = date[:-1] + 'а)'
     return date
