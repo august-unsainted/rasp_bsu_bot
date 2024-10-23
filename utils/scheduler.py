@@ -19,7 +19,7 @@ scheduler = AsyncIOScheduler(timezone='Asia/Irkutsk', jobstores=jobstores)
 
 async def send_rasp(_id: int):
     user = await find_user(_id)
-    message_text = await get_rasp(_id, user['day'], None)
+    message_text = await get_rasp(_id, user['day'], '')
     async with Bot(token=TOKEN) as bot:
         if message_text != 'К сожалению, на этот день нет расписания':
             await bot.send_message(_id, message_text, parse_mode='HTML')

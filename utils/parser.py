@@ -153,7 +153,7 @@ def get_week(soup: bs, user: dict, week_parity: int) -> str:
     return 'К сожалению, на этот день нет расписания'
 
 
-async def get_rasp(_id: int, rasp_type: str, week_parity: int | None) -> str:
+async def get_rasp(_id: int, rasp_type: str, week_parity: int | str) -> str:
     user = await find_user(_id)
     req = requests.get(user['rasp_link'])
     soup = bs(req.text, 'html.parser')
