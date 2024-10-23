@@ -13,7 +13,7 @@ router = Router()
 
 @router.message(F.text == 'Получить расписание')
 async def cmd_get(message: Message):
-    await message.answer('Выберите, какой прогноз Вам отправить:', reply_markup=get_rasp_kb)
+    await message.answer('Выберите, какое расписание Вам отправить:', reply_markup=get_rasp_kb)
     await message.delete()
 
 
@@ -71,3 +71,8 @@ async def full_time_rasp(callback: CallbackQuery):
     week_parity = int(callback.data[-1]) - 1
     await callback.message.edit_text(await get_rasp(callback.message.chat.id, 'week', week_parity),
                                      parse_mode='HTML', reply_markup=back_parity_kb)
+
+
+@router.callback_query(F.data == 'close')
+async def close_rasp(callback: CallbackQuery):
+    await callback.message.delete()
