@@ -65,6 +65,7 @@ def find_dates_other(lessons: list) -> (list, int):
             date = datetime.strptime(date, '%A (%d %B)')
             if today >= date:
                 index = i
+    print(lessons, index)
     return lessons, index
 
 #
