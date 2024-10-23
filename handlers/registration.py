@@ -31,7 +31,6 @@ async def cmd_start(message: Message, state: FSMContext):
     else:
         await message.answer('Данный бот предназначен для удобного поиска расписания и отправки его по времени 📆\n\n'
                              'По всем вопросам: @Feedback_rasp_bot')
-        await state.set_state(Register.day)
         await message.answer('Выберите, на какой день отправлять расписание:', reply_markup=reg_day_kb)
 
 
@@ -48,6 +47,7 @@ async def register_day(callback: CallbackQuery, state: FSMContext):
                                          parse_mode='HTML')
         await state.clear()
     else:
+        await state.set_state(Register.day)
         await state.update_data(day=day)
         await state.set_state(Register.time)
         await callback.message.edit_text('✅ <b>День выбран успешно!</b>\n\n'
