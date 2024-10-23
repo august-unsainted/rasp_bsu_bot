@@ -48,7 +48,6 @@ async def send_rasp(callback: CallbackQuery, state: FSMContext):
 
 @router.message(F.text.startswith('Расписание на'))
 async def send_rasp(message: Message):
-    await message.delete()
     await message.bot.send_chat_action(chat_id=message.from_user.id, action="typing")
     user = await find_user(message.chat.id)
     if message.text == 'Расписание на неделю':
@@ -61,10 +60,12 @@ async def send_rasp(message: Message):
             week_parity = find_rasp('Сегодня')[1]
             await message.answer(await get_rasp(message.chat.id, 'week', week_parity), parse_mode='HTML',
                                  reply_markup=close_kb)
+        await message.delete()
     else:
         day = message.text[14:].capitalize()
         await message.answer(await get_rasp(message.chat.id, day, ''), parse_mode='HTML',
                              reply_markup=close_kb)
+        await message.delete()
 
 
 @router.callback_query(F.data.startswith('week_parity'))
