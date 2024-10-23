@@ -19,6 +19,9 @@ get_week_parity_kb = [
     [InlineKeyboardButton(text='Нечётная (вторая)', callback_data='week_parity_2')],
     [InlineKeyboardButton(text='Назад', callback_data='rasp_back')]]
 
+close_kb = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='Закрыть', callback_data='close')]])
+
 
 def curr_week_kb() -> InlineKeyboardMarkup:
     week_parity = find_rasp('Сегодня')[1]

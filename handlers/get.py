@@ -6,7 +6,7 @@ from utils.db_functions import find_user
 from utils.parser import get_rasp, edit_week_length
 from utils.time_functions import find_rasp
 from handlers.registration import cmd_start
-from keyboards.get_rasp import curr_week_kb, get_rasp_kb, back_rasp_kb, back_parity_kb
+from keyboards.get_rasp import curr_week_kb, get_rasp_kb, back_rasp_kb, back_parity_kb, close_kb
 
 router = Router()
 
@@ -56,13 +56,15 @@ async def send_rasp(message: Message):
             text = await get_rasp(message.chat.id, 'week', 0)
             texts = edit_week_length(text)
             for mess in texts:
-                await message.answer(mess, parse_mode='HTML')
+                await message.answer(mess, parse_mode='HTML', reply_markup=close_kb)
         else:
             week_parity = find_rasp('Сегодня')[1]
-            await message.answer(await get_rasp(message.chat.id, 'week', week_parity), parse_mode='HTML')
+            await message.answer(await get_rasp(message.chat.id, 'week', week_parity), parse_mode='HTML',
+                                 reply_markup=close_kb)
     else:
         day = message.text[14:].capitalize()
-        await message.answer(await get_rasp(message.chat.id, day, ''), parse_mode='HTML')
+        await message.answer(await get_rasp(message.chat.id, day, ''), parse_mode='HTML',
+                             reply_markup=close_kb)
 
 
 @router.callback_query(F.data.startswith('week_parity'))
