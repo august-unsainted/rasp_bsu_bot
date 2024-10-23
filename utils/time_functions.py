@@ -27,20 +27,30 @@ def find_rasp(day: str) -> (int, int):
 
 
 def find_date(day: str) -> str:
-    if day == 'Завтра':
-        rasp_day = datetime.now() + timedelta(days=1)
+    if day.startswith('Неделя'):
+        week_dates = []
+        curr_week = find_rasp('Сегодня')[1]
+        today = datetime.today()
+        start_of_week = today - timedelta(days=today.weekday())
+        if int(day[-1]) != curr_week:
+            start_of_week += timedelta(days=7)
+        for i in range(7):
+            weekday_date = start_of_week + timedelta(days=i)
+            weekday = datetime.strftime(weekday_date, '%A (%e %B)').capitalize().lstrip()
+            if weekday[-2] in 'йь':
+                weekday = weekday[:-2] + 'я)'
+            else:
+                weekday[-1:] = 'а)'
+            week_dates.append(weekday)
+        return '\n'.join(week_dates)
+    elif day == 'Завтра':
+        rasp_day = datetime.today() + timedelta(days=1)
     else:
-        rasp_day = datetime.now()
-    # date = datetime.strftime(rasp_day, '%A (%e %B)').lower().lstrip()
-    date = datetime.strftime(rasp_day, '%e %B').lower().lstrip()
+        rasp_day = datetime.today()
 
-    # if date[-2] in 'йь':
-    #     date = date.replace(date[-2], 'я')
-    # else:
-    #     date[-1:] = 'а)'
-
-    if date[-1] in 'йь':
-        date = date.replace(date[-1], 'я')
+    date = datetime.strftime(rasp_day, '%A (%e %B)').capitalize().lstrip()
+    if date[-2] in 'йь':
+        date = date[:-2] + 'я)'
     else:
-        date += 'а'
+        date[-1:] = 'а)'
     return date

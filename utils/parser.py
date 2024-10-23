@@ -54,8 +54,8 @@ def find_department(group: str) -> str | None:
         return None
 
 
-def get_lessons(user: dict, old_week: Tag) -> str:
-    today, tomorrow = find_date('Сегодня'), find_date('Завтра')
+def get_lessons(user: dict, old_week: Tag, week_parity: int | str) -> str:
+    today, tomorrow, week_dates = find_date('Сегодня'), find_date('Завтра'), find_date('Неделя' + str(week_parity))
     detailed = user['settings'] == 'Подробное'
     department = user['department'] == 'Дневное отделение'
     lessons = old_week.find_all('tr')[1:]
@@ -74,16 +74,13 @@ def get_lessons(user: dict, old_week: Tag) -> str:
         subjects = el.find_all('td')
         for subj in subjects:
             if len(subjects) < 2:
-                lesson = {'other': f'<b>{subj.text}</b>\n'}
-                # if subj.text.lower() in today:
-                #     ind = today.find(' ')
-                #     day = ['Сегодня: ', today[:ind], today[ind:]]
-                # elif subj.text.lower() in tomorrow:
-                #     ind = tomorrow.find(' ')
-                #     day = ['Завтра: ', tomorrow[:ind], tomorrow[ind:]]
-                # else:
-                #     day = ['', subj.text, '']
-                # lesson = {'other': f'{day[0]}<b>{day[1]}</b>{day[2]}\n'}
+                start = week_dates.find(subj.text)
+                end = week_dates.find('\n', start)
+                day = week_dates[start:end].capitalize()
+                ind = day.find(' ')
+                lesson = {'other': f'<b>{day[:ind]}</b>{day[ind:]}\n'}
+                if day == today:
+                    lesson['other'] = 'Сегодня: ' + lesson['other']
                 week.append(f'{weekday[0]}<blockquote>{sep.join(weekday[1:])}</blockquote>\n')
                 weekday = []
                 break
@@ -130,14 +127,14 @@ def get_day(user: dict, soup: bs, day: str) -> str:
         rasp_weekday, week_parity = find_rasp(day)
         weeks_rasp = soup.find_all('table', class_='rasp_week')
         if len(weeks_rasp) > 0:
-            clear_week = get_lessons(user, weeks_rasp[week_parity]).split('</blockquote>')
+            clear_week = get_lessons(user, weeks_rasp[week_parity], week_parity).split('</blockquote>')
             if rasp_weekday < len(clear_week) - 1:
                 return f'{clear_week[rasp_weekday]}</blockquote>'
         return 'К сожалению, на этот день нет расписания'
     else:
         other_rasp = soup.find_all('table', class_='rasp_drasp')
         if other_rasp:
-            full_date, clear_week = find_date(day), get_lessons(user, other_rasp[0]).split('</blockquote>')
+            full_date, clear_week = find_date(day), get_lessons(user, other_rasp[0], '').split('</blockquote>')
             for el in clear_week:
                 if full_date in el:
                     return f'{clear_week[0]}</blockquote>'
@@ -152,7 +149,7 @@ def get_week(soup: bs, user: dict, week_parity: int) -> str:
         week_parity = 0
     rasp = soup.find_all('table', class_=class_name)
     if len(rasp) > 0:
-        return get_lessons(user, rasp[week_parity])
+        return get_lessons(user, rasp[week_parity], week_parity)
     return 'К сожалению, на этот день нет расписания'
 
 
