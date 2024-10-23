@@ -36,7 +36,7 @@ def find_date(day: str) -> str:
             start_of_week += timedelta(days=7)
         for i in range(7):
             weekday_date = start_of_week + timedelta(days=i)
-            weekday = datetime.strftime(weekday_date, '%A (%e %B)').capitalize().lstrip()
+            weekday = datetime.strftime(weekday_date, '%A (%e %B)').capitalize().lstrip().replace('( ', '(')
             # if weekday[-2] in 'йь':
             #     weekday = weekday[:-2] + 'я)'
             # else:
@@ -48,7 +48,7 @@ def find_date(day: str) -> str:
     else:
         rasp_day = datetime.today()
 
-    date = datetime.strftime(rasp_day, '%A (%e %B)').capitalize().lstrip()
+    date = datetime.strftime(rasp_day, '%A (%e %B)').capitalize().lstrip().replace('( ', '(')
     # if date[-2] in 'йь':
     #     date = date[:-2] + 'я)'
     # else:
