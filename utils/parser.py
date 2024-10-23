@@ -80,7 +80,7 @@ def get_lessons(user: dict, old_week: Tag, week_parity: int | str) -> str:
                 ind = day.find(' ')
                 lesson = {'other': f'<b>{day[:ind]}</b>{day[ind:]}\n'}
                 if day == today:
-                    lesson['other'] = 'Сегодня: ' + lesson['other']
+                    lesson['other'] = '📆 ' + lesson['other']
                 week.append(f'{weekday[0]}<blockquote>{sep.join(weekday[1:])}</blockquote>\n')
                 weekday = []
                 break
@@ -130,8 +130,10 @@ def get_day(user: dict, soup: bs, day: str) -> str:
             clear_week = get_lessons(user, weeks_rasp[week_parity], week_parity).split('</blockquote>')
             if rasp_weekday < len(clear_week) - 1:
                 if day == 'Завтра':
-                    return f'{clear_week[rasp_weekday].replace('\n\n', 'Завтра: ', 1)}</blockquote>'
-                return f'{clear_week[rasp_weekday]}</blockquote>'
+                    old, new = '\n\n', 'Завтра: '
+                else:
+                    old, new = '📆', 'Сегодня: '
+                return f'{clear_week[rasp_weekday].replace(old, new, 1)}</blockquote>'
         return 'К сожалению, на этот день нет расписания'
     else:
         other_rasp = soup.find_all('table', class_='rasp_drasp')

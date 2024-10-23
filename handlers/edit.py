@@ -64,7 +64,7 @@ async def set_settings(callback: CallbackQuery):
     key = hotkeys[callback.data.replace('_hotkey', '')]
     update_user(callback.message.chat.id, {'hotkey': key})
     main_kb.keyboard[0][0].text = key
-    await callback.message.answer('Для изменения других данных воспользуйтесь кнопкой ☺️', reply_markup=main_kb)
+    await callback.message.answer('Для изменения других данных воспользуйтесь меню ☺️', reply_markup=main_kb)
 
 
 @router.callback_query(F.data == 'edit_settings')

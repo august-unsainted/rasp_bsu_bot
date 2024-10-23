@@ -10,7 +10,8 @@ edit_kb = InlineKeyboardMarkup(inline_keyboard=[
      InlineKeyboardButton(text='🏢 Отделение', callback_data='edit_department')],
     [InlineKeyboardButton(text='📌 Быстрая кнопка', callback_data='edit_hotkey'),
      InlineKeyboardButton(text='⚙️ Стиль отображения', callback_data='edit_settings')],
-    [InlineKeyboardButton(text='⛔ Прекратить отправку сообщений', callback_data='stop')]])
+    [InlineKeyboardButton(text='⛔ Прекратить отправку сообщений', callback_data='stop')],
+    [InlineKeyboardButton(text='Закрыть', callback_data='close')]])
 
 edit_day_kb = [
     [InlineKeyboardButton(text='Сегодня', callback_data='send_today')],
