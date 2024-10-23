@@ -25,13 +25,14 @@ async def cmd_get_rasp(callback: CallbackQuery):
 @router.callback_query(F.data.endswith('rasp'))
 async def send_rasp(callback: CallbackQuery, state: FSMContext):
     user = await find_user(callback.message.chat.id)
-    await callback.answer('Тип расписания выбран успешно!')
     if user and callback.data == 'week_rasp':
         if user["department"] == 'Дневное отделение':
+            await callback.answer('Тип расписания выбран успешно!')
             await callback.message.edit_text('Выберите номер недели:', reply_markup=curr_week_kb())
         else:
             text = await get_rasp(callback.message.chat.id, 'week', 0)
             texts = edit_week_length(text)
+            await callback.answer('Тип расписания выбран успешно!')
             await callback.message.edit_text(texts[0], parse_mode='HTML', reply_markup=back_rasp_kb)
             if len(texts) > 1:
                 for mess in texts[1:]:
@@ -40,7 +41,9 @@ async def send_rasp(callback: CallbackQuery, state: FSMContext):
         rasp_type = callback.data.replace('_rasp', '')
         if rasp_type == 'tomorrow':
             rasp_type = 'Завтра'
-        await callback.message.edit_text(await get_rasp(user['_id'], rasp_type, ''), parse_mode='HTML',
+        text = await get_rasp(user['_id'], rasp_type, '')
+        await callback.answer('Тип расписания выбран успешно!')
+        await callback.message.edit_text(text, parse_mode='HTML',
                                          reply_markup=back_rasp_kb)
     else:
         await cmd_start(callback.message, state)
