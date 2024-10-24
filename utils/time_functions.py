@@ -63,6 +63,8 @@ def find_dates_other(lessons: ResultSet) -> (ResultSet, int):
             date = datetime.strptime(date, '%A (%d %B) %Y')
             if today > date:
                 index = i
+                if date != today:
+                    index += 1
     return lessons, index
 
 #
