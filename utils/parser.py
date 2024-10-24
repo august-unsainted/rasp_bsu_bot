@@ -87,7 +87,8 @@ def get_lessons(user: dict, old_week: Tag, week_parity: int | str) -> str:
                     lesson = {'other': f'<b>{day[:ind]}</b>{day[ind:]}\n'}
                 else:
                     day = subj.text
-                    lesson = {'other': f'{subj.text}\n'}
+                    ind = day.find(' ')
+                    lesson = {'other': f'<b>{day[:ind]}</b>{day[ind:]}\n'}
                 if day == today:
                     lesson['other'] = '📆 ' + lesson['other']
                 week.append(f'{weekday[0]}<blockquote>{sep.join(weekday[1:])}</blockquote>\n')
@@ -150,8 +151,10 @@ def get_day(user: dict, soup: bs, day: str) -> str:
             for el in clear_week:
                 if full_date in el:
                     if day == 'Завтра':
-                        return f'{el}</blockquote>'.replace('\n\n', 'Завтра: ')
-                    return f'{el}</blockquote>'
+                        old, new = '\n\n', 'Завтра: '
+                    else:
+                        old, new = '📆', 'Сегодня: '
+                    return f'{el.replace(old, new, 1)}</blockquote>'
         return 'К сожалению, на этот день нет расписания'
 
 
