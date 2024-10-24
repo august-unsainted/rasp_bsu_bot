@@ -41,7 +41,7 @@ async def register_day(callback: CallbackQuery, state: FSMContext):
     days = {'today': 'Сегодня', 'tomorrow': 'Завтра'}
     day = days[callback.data.split('_')[1]]
     if await find_user(callback.message.chat.id):
-        update_user(callback.message.chat.id, {'day': day})
+        await update_user(callback.message.chat.id, {'day': day})
         await callback.message.edit_text('✅ <b>День успешно изменен!</b>\n\n'
                                          'Для изменения других данных воспользуйтесь кнопкой ☺️', reply_markup=back_kb,
                                          parse_mode='HTML')
@@ -63,7 +63,7 @@ async def set_time(message: Message, state: FSMContext):
         user = await find_user(message.chat.id)
         if user:
             await state.clear()
-            update_user(message.chat.id, {"time": time})
+            await update_user(message.chat.id, {"time": time})
             add_schedule(await find_user(message.chat.id))
             await message.answer('✅ <b>Время отправки успешно изменено!</b>\n\n'
                                  'Для изменения других данных воспользуйтесь кнопкой ☺️', reply_markup=back_kb,
@@ -101,10 +101,10 @@ async def set_group(message: Message, state: FSMContext):
         await state.update_data(group=group)
         if await find_user(message.chat.id):
             await state.clear()
-            update_user(message.chat.id, {"rasp_link": 'https://bsu.ru/rasp/?g=' + group})
+            await update_user(message.chat.id, {"rasp_link": 'https://bsu.ru/rasp/?g=' + group})
             department = find_department(group)
             if department:
-                update_user(message.chat.id, {"department": department})
+                await update_user(message.chat.id, {"department": department})
                 await message.answer(f'✅ <b>Номер группы успешно изменен!</b>\n\n'
                                      f'Отделение автоматически определено как «{department[:7].lower()}» 😇',
                                      reply_markup=back_kb, parse_mode='HTML')
@@ -136,7 +136,7 @@ async def set_department(callback: CallbackQuery, state: FSMContext):
     await state.update_data(department=departments[callback.data])
     _id = message.chat.id
     if await find_user(_id):
-        update_user(_id, {"department": departments[callback.data]})
+        await update_user(_id, {"department": departments[callback.data]})
         await message.edit_text('✅ <b>Отделение успешно изменено!</b>\n\n'
                                 'Для изменения других данных воспользуйтесь кнопкой ☺️', reply_markup=back_kb,
                                 parse_mode='HTML')

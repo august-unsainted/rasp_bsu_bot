@@ -17,8 +17,8 @@ def add_user(chat_id: int, day: str, time: str, group: str, department: str) -> 
     })
 
 
-def update_user(chat_id: int, data: dict) -> None:
-    collection.update_one({"_id": chat_id}, {"$set": data})
+async def update_user(chat_id: int, data: dict) -> None:
+    return await collection.update_one({"_id": chat_id}, {"$set": data})
 
 
 def delete_user(chat_id: int) -> None:
