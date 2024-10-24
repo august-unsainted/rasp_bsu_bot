@@ -75,8 +75,6 @@ def get_lessons(user: dict, old_week: Tag, week_parity: int | str) -> str:
 
     for el in lessons:
         lesson = {}
-        print(el)
-        break
         subjects = el.find_all('td')
         for subj in subjects:
             if len(subjects) < 2:
