@@ -57,7 +57,7 @@ def find_dates_other(lessons: ResultSet) -> (ResultSet, int):
             month, weekday = lessons[i].text.split(', ')
             lessons[i].string.replace_with(f'{weekday.capitalize()} ({month})')
             text = lessons[i].text.title()
-            date = text[0].lower() + text[1:-2] + 'ь) 2024'
+            date = text[0].lower() + text[1:] + ' 2024'
             if len(lessons[i].text.split(' ')[1]) == 2:
                 date = date.replace('(', '(0')
             date = datetime.strptime(date, '%A (%d %B) %Y')
