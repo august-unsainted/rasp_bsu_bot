@@ -125,10 +125,7 @@ def get_lessons(user: dict, old_week: Tag, week_parity: int | str) -> str:
             weekday.append(lesson)
 
     week.append(f'{weekday[0]}<blockquote>{sep.join(weekday[1:])}</blockquote>\n')
-    text = '\n'.join(week[1:])
-    if department:
-        return text
-    return text
+    return '\n'.join(week[1:])
     # return f'<b>{text[find_ind_rasp(lessons):]}'
     # return f'<b>{text[text.index(today):]}'
 
@@ -152,6 +149,8 @@ def get_day(user: dict, soup: bs, day: str) -> str:
             full_date, clear_week = find_date(day), get_lessons(user, other_rasp[0], '').split('</blockquote>')
             for el in clear_week:
                 if full_date in el:
+                    print(full_date, el)
+                    print(clear_week)
                     return f'{clear_week[0]}</blockquote>'
         return 'К сожалению, на этот день нет расписания'
 

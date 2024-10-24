@@ -51,20 +51,18 @@ def find_date(day: str) -> str:
 
 def find_dates_other(lessons: ResultSet) -> (ResultSet, int):
     today = datetime.today()
-    print(datetime.strftime(today, '%A (%e %B)'))
     index = -1
     for i in range(len(lessons)):
         if 'valign' not in lessons[i].attrs:
             month, weekday = lessons[i].text.split(', ')
             lessons[i].string.replace_with(f'{weekday.capitalize()} ({month})')
             text = lessons[i].text.title()
+            date = text[0].lower() + text[1:-2] + 'ь) 2024'
             if len(lessons[i].text.split(' ')[1]) == 2:
-                date = text[0].lower() + text[1:].replace('(', '(0')
-            else:
-                date = text[0].lower() + text[1:]
-            date = datetime.strptime(date, '%A (%d %B)')
+                date = date.replace('(', '(0')
+            date = datetime.strptime(date, '%A (%d %B) %Y')
             if today > date:
-                index = i + 1
+                index = i
     return lessons, index
 
 #

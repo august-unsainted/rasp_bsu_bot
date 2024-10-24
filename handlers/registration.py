@@ -23,7 +23,7 @@ class Register(StatesGroup):
 
 
 @router.message(CommandStart())
-async def cmd_start(message: Message, state: FSMContext):
+async def cmd_start(message: Message):
     await message.bot.send_chat_action(chat_id=message.from_user.id, action="typing")
     if await find_user(message.chat.id):
         await message.answer(
