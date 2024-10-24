@@ -62,7 +62,7 @@ async def set_settings(callback: CallbackQuery):
         'full': 'Расписание на неделю'
     }
     key = hotkeys[callback.data.replace('_hotkey', '')]
-    update_user(callback.message.chat.id, {'hotkey': key})
+    await update_user(callback.message.chat.id, {'hotkey': key})
     main_kb.keyboard[0][0].text = key
     await callback.message.answer('Для изменения других данных воспользуйтесь меню ☺️', reply_markup=main_kb)
 
@@ -81,7 +81,7 @@ async def settings(callback: CallbackQuery):
         'default': 'Простое'
     }
     settings_type = setting[callback.data.split('_')[0]]
-    update_user(callback.message.chat.id, {"settings": settings_type})
+    await update_user(callback.message.chat.id, {"settings": settings_type})
     await callback.answer('Настройки изменены успешно')
     await callback.message.edit_text('✅ <b>Тип отображения был успешно изменен!</b>\n\n'
                                      'Для изменения других данных воспользуйтесь кнопкой ☺️', parse_mode='HTML',
