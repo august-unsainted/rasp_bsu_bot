@@ -150,7 +150,7 @@ def get_day(user: dict, soup: bs, day: str) -> str:
             for el in clear_week:
                 if full_date in el:
                     if day == 'Завтра':
-                        return f'Завтра: {el}</blockquote>'
+                        return f'{el}</blockquote>'.replace('\n\n', 'Завтра: ')
                     return f'{el}</blockquote>'
         return 'К сожалению, на этот день нет расписания'
 
