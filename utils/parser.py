@@ -149,7 +149,7 @@ def get_day(user: dict, soup: bs, day: str) -> str:
         if other_rasp:
             full_date, clear_week = find_date(day), get_lessons(user, other_rasp[0], '').split('</blockquote>')
             for el in clear_week:
-                if full_date in el:
+                if full_date in el.replace('<b>', '').replace('</b>', ''):
                     if day == 'Завтра':
                         old, new = '\n\n', 'Завтра: '
                     else:
