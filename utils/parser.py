@@ -62,7 +62,8 @@ def get_lessons(user: dict, old_week: Tag, week_parity: int | str) -> str:
     if department:
         week_dates = find_date('Неделя' + str(week_parity))
     else:
-        lessons = find_dates_other(lessons)
+        lessons, ind = find_dates_other(lessons)
+        lessons = lessons[ind:]
     weekday, week = ['', ''], []
     sep = '\n\n'
     types = {

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from bs4 import Tag
+from bs4 import ResultSet
 import locale
 
 locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
@@ -49,7 +49,7 @@ def find_date(day: str) -> str:
     return date
 
 
-def find_dates_other(lessons: list) -> (list, int):
+def find_dates_other(lessons: ResultSet) -> (ResultSet, int):
     today = datetime.today()
     print(datetime.strftime(today, '%A (%e %B)'))
     index = -1
@@ -65,7 +65,6 @@ def find_dates_other(lessons: list) -> (list, int):
             date = datetime.strptime(date, '%A (%d %B)')
             if today >= date:
                 index = i
-    print(lessons, index)
     return lessons, index
 
 #
