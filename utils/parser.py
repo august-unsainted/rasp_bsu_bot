@@ -149,6 +149,8 @@ def get_day(user: dict, soup: bs, day: str) -> str:
             full_date, clear_week = find_date(day), get_lessons(user, other_rasp[0], '').split('</blockquote>')
             for el in clear_week:
                 if full_date in el:
+                    if day == 'Завтра':
+                        return f'Завтра: {el}</blockquote>'
                     return f'{el}</blockquote>'
         return 'К сожалению, на этот день нет расписания'
 
