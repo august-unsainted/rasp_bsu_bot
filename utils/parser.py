@@ -151,7 +151,7 @@ def get_day(user: dict, soup: bs, day: str) -> str:
             for el in clear_week:
                 if full_date in el.replace('<b>', '').replace('</b>', ''):
                     if day == 'Завтра':
-                        old, new = '\n\n', 'Завтра: '
+                        old, new = '<b>', 'Завтра: <b>'
                     else:
                         old, new = '📆', 'Сегодня: '
                     return f'{el.replace(old, new, 1)}</blockquote>'

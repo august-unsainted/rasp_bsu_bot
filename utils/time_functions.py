@@ -66,11 +66,3 @@ def find_dates_other(lessons: ResultSet) -> (ResultSet, int):
                 if datetime.strftime(date, '%A (%d %B)') != datetime.strftime(today, '%A (%d %B)'):
                     index += 1
     return lessons, index
-
-#
-# def find_date_other(dates: list) -> list:
-#     for i in range(len(dates)):
-#         month, weekday = dates[i].split(', ')
-#         dates[i] = f'{weekday.capitlize()} ({month})'
-#     return dates
-
