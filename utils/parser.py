@@ -139,7 +139,7 @@ def get_day(user: dict, soup: bs, day: str) -> str:
             clear_week = get_lessons(user, weeks_rasp[week_parity], week_parity).split('</blockquote>')
             if rasp_weekday < len(clear_week) - 1:
                 if day == 'Завтра':
-                    old, new = '\n\n', 'Завтра: '
+                    old, new = '<b>', 'Завтра: <b>'
                 else:
                     old, new = '📆', 'Сегодня: '
                 return f'{clear_week[rasp_weekday].replace(old, new, 1)}</blockquote>'
